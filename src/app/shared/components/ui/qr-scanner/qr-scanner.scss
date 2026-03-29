@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.qr-scanner {
+  display: grid;
+  gap: var(--panel-gap);
+}
+
+.qr-scanner__copy {
+  display: grid;
+  gap: var(--stack-xs);
+}
+
+.qr-scanner__viewport {
+  position: relative;
+  overflow: hidden;
+  min-height: 18rem;
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+
+.qr-scanner__video {
+  display: block;
+  width: 100%;
+  min-height: 18rem;
+  object-fit: cover;
+}
+
+.qr-scanner__frame {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: min(68vw, 14rem);
+  aspect-ratio: 1;
+  border: 2px solid rgb(184 154 102 / 0.85);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 999px rgb(3 4 5 / 0.4);
+  transform: translate(-50%, -50%);
+}
+
+.qr-scanner__actions {
+  display: flex;
+  gap: var(--stack-sm);
+  flex-wrap: wrap;
+}

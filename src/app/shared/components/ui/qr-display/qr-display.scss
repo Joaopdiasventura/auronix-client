@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+.qr-display {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.qr-display__copy {
+  display: grid;
+  gap: var(--stack-xs);
+}
+
+.qr-display__image-shell,
+.qr-display__placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 14rem;
+  padding: 1rem;
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+
+.qr-display__placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.qr-display__placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.06) 50%,
+    transparent 100%
+  );
+  animation: qr-placeholder-shimmer 1.2s linear infinite;
+}
+
+.qr-display__image {
+  width: min(100%, 18rem);
+  height: auto;
+}
+
+@keyframes qr-placeholder-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}

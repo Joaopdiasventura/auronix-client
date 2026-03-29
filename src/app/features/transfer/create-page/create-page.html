@@ -1,0 +1,171 @@
+<section class="page-shell" [attr.aria-busy]="shouldShowSkeleton() ? 'true' : null">
+  <app-page-header [description]="pageDescription()" kicker="Transferências" [title]="pageTitle()">
+    @if (isPaymentRequestMode()) {
+      <a
+        class="button button--ghost"
+        pageHeaderActions
+        [routerLink]="['/payment-request', paymentRequestId()]"
+      >
+        Voltar à cobrança
+      </a>
+    } @else {
+      <a class="button button--ghost" pageHeaderActions routerLink="/transfer/key">
+        Voltar à chave
+      </a>
+    }
+  </app-page-header>
+
+  @if (feedbackState(); as state) {
+    <section
+      class="surface-card feedback-card"
+      [class.feedback-card--danger]="state.tone == 'danger'"
+    >
+      <span class="section-kicker">
+        {{ state.tone == 'danger' ? 'Falha' : 'Cobrança indisponível' }}
+      </span>
+      <h2 class="feedback-card__title">{{ state.title }}</h2>
+      <p class="feedback-card__copy">{{ state.description }}</p>
+
+      <div class="action-row">
+        @if (isPaymentRequestMode()) {
+          <a
+            class="button button--secondary"
+            [routerLink]="['/payment-request', paymentRequestId()]"
+          >
+            Voltar à cobrança
+          </a>
+        } @else {
+          <a class="button button--secondary" routerLink="/transfer/key">Escolher outra chave</a>
+        }
+        <a class="button button--ghost" routerLink="/payment-request/create">Nova cobrança</a>
+      </div>
+    </section>
+  } @else if (shouldShowSkeleton() || hasResolvedTarget()) {
+    <section class="authorization-layout" [class.content-fade-in]="!shouldShowSkeleton()">
+      <form class="authorization-form surface-card" (submit)="submit($event)" novalidate>
+        @if (shouldShowSkeleton()) {
+          <div class="authorization-form__copy" aria-hidden="true">
+            <app-skeleton height="0.72rem" width="7rem" />
+            <app-skeleton height="1.2rem" width="13rem" />
+            <app-skeleton height="0.85rem" width="100%" />
+            <app-skeleton height="0.85rem" width="78%" />
+          </div>
+
+          <div class="authorization-form__snapshot" aria-hidden="true">
+            @if (isPaymentRequestMode()) {
+              <app-skeleton-readonly-grid
+                [fields]="4"
+                [labelWidths]="paymentRequestSnapshotSkeletonLabelWidths"
+                [valueWidths]="paymentRequestSnapshotSkeletonValueWidths"
+              />
+            } @else {
+              <app-skeleton-readonly-grid
+                [fields]="3"
+                [labelWidths]="emailSnapshotSkeletonLabelWidths"
+                [valueWidths]="emailSnapshotSkeletonValueWidths"
+              />
+            }
+          </div>
+
+          @if (!isPaymentRequestMode()) {
+            <div class="authorization-form__field-skeleton" aria-hidden="true">
+              <app-skeleton height="0.72rem" width="8rem" />
+              <app-skeleton height="3.25rem" radius="var(--radius-md)" width="100%" />
+              <app-skeleton height="0.8rem" width="60%" />
+            </div>
+          }
+
+          <div class="authorization-form__field-skeleton" aria-hidden="true">
+            <app-skeleton height="0.72rem" width="8.5rem" />
+            <app-skeleton height="3.25rem" radius="var(--radius-md)" width="100%" />
+            <app-skeleton height="0.8rem" width="72%" />
+          </div>
+
+          <app-skeleton
+            class="authorization-form__submit-skeleton"
+            height="2.75rem"
+            radius="var(--radius-pill)"
+            width="100%"
+          />
+        } @else {
+          <div class="authorization-form__copy">
+            <span class="section-kicker">Confirmação final</span>
+            <h2 class="section-title">{{ transferStepTitle() }}</h2>
+            <p class="section-copy">{{ transferStepDescription() }}</p>
+          </div>
+
+          @if (formErrorMessage()) {
+            <div class="alert alert--error" aria-live="polite">
+              <p>{{ formErrorMessage() }}</p>
+            </div>
+          }
+
+          <div class="authorization-form__snapshot readonly-grid">
+            @if (isPaymentRequestMode()) {
+              <div class="readonly-field">
+                <span class="readonly-field__label">Identificador da cobrança</span>
+                <strong class="readonly-field__value">{{ paymentRequest()!.id }}</strong>
+              </div>
+            }
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">{{ recipientIdentifierLabel() }}</span>
+              <strong class="readonly-field__value">{{ recipientIdentifier() }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Valor da transferência</span>
+              <strong class="readonly-field__value">
+                @if (isPaymentRequestMode()) {
+                  {{ formattedValue() }}
+                } @else {
+                  {{ formattedValue() || 'Defina um valor para a operação' }}
+                }
+              </strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Conta favorecida</span>
+              <strong class="readonly-field__value">{{ payeeName() }}</strong>
+            </div>
+          </div>
+
+          @if (isEmailMode()) {
+            <app-input
+              hint="Use vírgula ou ponto decimal. O mínimo operacional é R$ 0,01."
+              inputMode="decimal"
+              label="Valor da transferência"
+              name="value"
+              placeholder="150,00"
+              [formField]="createTransferForm.value"
+            />
+          }
+
+          <app-input
+            autocomplete="off"
+            hint="A descrição é opcional e aparece no extrato e no detalhe da transferência."
+            label="Descrição (opcional)"
+            name="description"
+            [placeholder]="
+              isPaymentRequestMode()
+                ? 'Transferência referente à cobrança validada'
+                : 'Transferência identificada por e-mail'
+            "
+            [formField]="createTransferForm.description"
+          />
+
+          <button
+            class="button button--primary button--block"
+            type="submit"
+            [disabled]="isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              <span class="button__spinner" aria-hidden="true"></span>
+            }
+            {{ submitLabel() }}
+          </button>
+        }
+      </form>
+    </section>
+  }
+</section>

@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 23rem);
+  gap: var(--section-gap);
+}
+
+.profile-form,
+.profile-summary {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.profile-summary-stack {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.profile-form__copy,
+.profile-summary__section {
+  display: grid;
+  gap: var(--stack-sm);
+}
+
+.profile-qr-card {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.profile-form__copy {
+  padding-bottom: var(--stack-sm);
+  border-bottom: 1px solid var(--color-stroke);
+}
+
+.profile-summary {
+  border-top: 2px solid rgb(184 154 102 / 0.32);
+}
+
+.profile-summary__section + .profile-summary__section {
+  margin-top: var(--stack-sm);
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--color-stroke);
+}
+
+.profile-summary__section .section-copy {
+  max-width: 20rem;
+}
+
+@media (max-width: 960px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+}

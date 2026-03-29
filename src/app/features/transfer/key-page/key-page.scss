@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.transfer-key-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+  gap: var(--section-gap);
+}
+
+.transfer-key-form,
+.transfer-key-briefing {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.transfer-key-form__copy {
+  display: grid;
+  gap: var(--stack-sm);
+  padding-bottom: var(--stack-sm);
+  border-bottom: 1px solid var(--color-stroke);
+}
+
+@media (max-width: 960px) {
+  .transfer-key-layout {
+    grid-template-columns: 1fr;
+  }
+}

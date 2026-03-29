@@ -1,0 +1,110 @@
+:host {
+  display: contents;
+}
+
+.toast-shell {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  z-index: 1200;
+  width: min(22rem, calc(100vw - 2rem));
+}
+
+.toast-stack {
+  display: grid;
+  gap: var(--stack-sm);
+}
+
+.toast-card {
+  display: grid;
+  gap: var(--stack-md);
+  padding: 0.875rem 0.9375rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-stroke);
+  background: var(--color-surface-1);
+  box-shadow: var(--shadow-1);
+}
+
+.toast-card--info {
+  border-color: rgb(91 141 239 / 0.28);
+}
+
+.toast-card--success {
+  border-color: rgb(61 175 124 / 0.28);
+}
+
+.toast-card--error {
+  border-color: rgb(212 107 93 / 0.28);
+}
+
+.toast-copy {
+  display: grid;
+  gap: var(--stack-xs);
+}
+
+.toast-copy strong {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.toast-copy p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.toast-actions {
+  display: flex;
+  gap: var(--stack-sm);
+  flex-wrap: wrap;
+}
+
+.toast-button {
+  min-height: var(--control-height-sm);
+  padding: 0.5rem var(--control-padding-x-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-stroke);
+  background: rgb(255 255 255 / 0.02);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  transition:
+    border-color var(--motion-base),
+    background-color var(--motion-base),
+    color var(--motion-base),
+    opacity var(--motion-base);
+}
+
+.toast-button:hover {
+  border-color: var(--color-stroke-strong);
+  background: var(--color-surface-3);
+}
+
+.toast-button--primary {
+  border-color: rgb(200 168 106 / 0.35);
+  background: var(--color-brand);
+  color: #0c1318;
+}
+
+.toast-button--primary:hover {
+  border-color: rgb(204 176 123 / 0.38);
+  background: var(--color-brand-strong);
+}
+
+.toast-button--ghost {
+  background: rgb(255 255 255 / 0.02);
+}
+
+@media (max-width: 640px) {
+  .toast-shell {
+    top: auto;
+    right: 0.75rem;
+    bottom: 4.75rem;
+    left: 0.75rem;
+    width: auto;
+  }
+}

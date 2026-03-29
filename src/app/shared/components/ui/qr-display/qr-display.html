@@ -1,0 +1,33 @@
+<article class="qr-display surface-card">
+  <div class="qr-display__copy">
+    @if (kicker()) {
+      <span class="section-kicker">{{ kicker() }}</span>
+    }
+    <h2 class="section-title">{{ title() }}</h2>
+
+    @if (description()) {
+      <p class="section-copy">{{ description() }}</p>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="qr-display__placeholder" aria-hidden="true"></div>
+  } @else if (errorMessage()) {
+    <div class="alert alert--error" aria-live="polite">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else if (qrCodeDataUrl()) {
+    <div class="qr-display__image-shell">
+      <img class="qr-display__image" [src]="qrCodeDataUrl()" [alt]="qrImageAlt()" />
+    </div>
+  }
+
+  <div class="readonly-field">
+    <span class="readonly-field__label">Conteúdo</span>
+    <strong class="readonly-field__value">{{ value() }}</strong>
+  </div>
+
+  <button class="button button--secondary" type="button" [disabled]="!qrCodeDataUrl()" (click)="download()">
+    Baixar QR
+  </button>
+</article>

@@ -1,0 +1,145 @@
+<section class="page-shell" [attr.aria-busy]="shouldShowSkeleton() ? 'true' : null">
+  <app-page-header
+    description="Resumo da operação com valor, contraparte, identificador e linha do tempo."
+    kicker="Transferências"
+    title="Detalhe da transferência"
+  >
+    <a class="button button--ghost" pageHeaderActions routerLink="/transfer">Voltar ao extrato</a>
+  </app-page-header>
+
+  @if (errorMessage()) {
+    <div class="alert alert--error" aria-live="polite">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  @if (shouldShowSkeleton() || transfer()) {
+    <section class="details-layout" [class.content-fade-in]="!shouldShowSkeleton()">
+      @if (shouldShowSkeleton()) {
+        <article class="details-summary surface-card" aria-hidden="true">
+          <div class="details-summary__top">
+            <div>
+              <app-skeleton height="0.72rem" width="8rem" />
+              <app-skeleton height="4rem" width="12rem" />
+            </div>
+
+            <app-skeleton height="1.6rem" radius="var(--radius-pill)" width="6rem" />
+          </div>
+
+          <app-skeleton height="0.9rem" width="100%" />
+          <app-skeleton height="0.9rem" width="78%" />
+
+          <div class="counterparty-grid">
+            <div class="readonly-field">
+              <app-skeleton height="0.65rem" width="7rem" />
+              <app-skeleton height="0.95rem" width="9rem" />
+            </div>
+
+            <div class="readonly-field">
+              <app-skeleton height="0.65rem" width="8rem" />
+              <app-skeleton height="0.95rem" width="9rem" />
+            </div>
+          </div>
+
+          <div class="details-note">
+            <app-skeleton height="0.72rem" width="6rem" />
+            <app-skeleton height="0.95rem" width="9rem" />
+            <app-skeleton height="0.85rem" width="100%" />
+            <app-skeleton height="0.85rem" width="72%" />
+          </div>
+        </article>
+
+        <article class="details-meta surface-card" aria-hidden="true">
+          <app-skeleton-readonly-grid
+            [fields]="3"
+            [labelWidths]="transferMetaSkeletonLabelWidths"
+            [valueWidths]="transferMetaSkeletonValueWidths"
+          />
+
+          <div class="timeline">
+            <app-skeleton height="0.72rem" width="7rem" />
+            <app-skeleton-timeline [steps]="2" />
+          </div>
+        </article>
+      } @else if (transfer(); as currentTransfer) {
+        <article class="details-summary surface-card">
+          <div class="details-summary__top">
+            <div>
+              <span class="section-kicker">Resumo da operação</span>
+              <h2 class="details-summary__amount">{{ amountLabel() }}</h2>
+            </div>
+
+            <app-status-chip
+              [label]="statusLabel(currentTransfer.status)"
+              [tone]="statusTone(currentTransfer.status)"
+            />
+          </div>
+
+          <p class="section-copy">{{ resolveDescription(currentTransfer) }}</p>
+
+          <div class="counterparty-grid">
+            <div class="readonly-field">
+              <span class="readonly-field__label">Conta pagadora</span>
+              <strong class="readonly-field__value">{{ currentTransfer.payer.name }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Conta favorecida</span>
+              <strong class="readonly-field__value">{{ currentTransfer.payee.name }}</strong>
+            </div>
+          </div>
+
+          <div class="details-note">
+            <span class="section-kicker">Contraparte</span>
+            <strong>{{ resolveCounterpartyLabel(currentTransfer) }}</strong>
+            <span>Valor, contraparte e horário permanecem vinculados a esta operação.</span>
+          </div>
+        </article>
+
+        <article class="details-meta surface-card">
+          <div class="readonly-grid">
+            <div class="readonly-field">
+              <span class="readonly-field__label">Identificador</span>
+              <strong class="readonly-field__value">{{ currentTransfer.id }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Criada em</span>
+              <strong class="readonly-field__value">{{
+                formatDate(currentTransfer.createdAt)
+              }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Atualizada em</span>
+              <strong class="readonly-field__value">{{
+                formatDate(currentTransfer.updatedAt)
+              }}</strong>
+            </div>
+          </div>
+
+          <div class="timeline">
+            <span class="section-kicker">Linha do tempo</span>
+
+            @for (step of timelineSteps(); track step.label) {
+              <div class="timeline__item" [class.timeline__item--current]="step.isCurrent">
+                <div class="timeline__dot"></div>
+                <div class="timeline__content">
+                  <strong>{{ step.label }}</strong>
+                  <span>{{ step.timestampLabel }}</span>
+                  <p>{{ step.description }}</p>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (currentTransfer.failureReason) {
+            <div class="alert alert--error">
+              <p>{{ currentTransfer.failureReason }}</p>
+            </div>
+          }
+        </article>
+      }
+    </section>
+  }
+</section>

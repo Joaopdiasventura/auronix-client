@@ -1,0 +1,20 @@
+<section
+  class="skeleton-block"
+  [class.skeleton-block--form]="kind() == 'form'"
+  [class.skeleton-block--lines]="kind() == 'lines'"
+  [class.skeleton-block--table]="kind() == 'table'"
+>
+  <div class="skeleton-block__line skeleton-block__line--kicker"></div>
+  <div class="skeleton-block__line skeleton-block__line--title"></div>
+  <div class="skeleton-block__line skeleton-block__line--body"></div>
+
+  @if (kind() == 'table') {
+    @for (item of items(); track item) {
+      <div class="skeleton-block__row"></div>
+    }
+  } @else {
+    @for (item of items(); track item) {
+      <div class="skeleton-block__line"></div>
+    }
+  }
+</section>

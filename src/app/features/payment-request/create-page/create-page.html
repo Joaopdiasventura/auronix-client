@@ -1,0 +1,173 @@
+<section class="page-shell">
+  <app-page-header
+    description="Defina o valor, emita o identificador da cobrança e compartilhe o link de validação."
+    kicker="Cobranças"
+    title="Nova cobrança"
+  >
+    <a class="button button--ghost" pageHeaderActions routerLink="/">Voltar ao painel</a>
+  </app-page-header>
+
+  @if (!createdPaymentRequest()) {
+    <section class="request-layout">
+      <form class="request-form surface-card" (submit)="submit($event)" novalidate>
+        <div class="request-form__copy">
+          <span class="section-kicker">Definir valor</span>
+          <h2 class="section-title">Emissão da cobrança</h2>
+          <p class="section-copy">
+            O valor informado gera um identificador próprio e passa a ser a referência da cobrança.
+          </p>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="alert alert--error" aria-live="polite">
+            <p>{{ errorMessage() }}</p>
+          </div>
+        }
+
+        <app-input
+          hint="Use vírgula ou ponto decimal. O mínimo operacional é R$ 0,10."
+          inputMode="decimal"
+          label="Valor da cobrança"
+          name="value"
+          placeholder="150,00"
+          [formField]="createPaymentRequestForm.value"
+        />
+
+        <div class="request-note">
+          <span class="section-kicker">Controle</span>
+          <strong>Fluxo de emissão</strong>
+          <p>
+            Revise o valor antes de compartilhar. A transferência será autorizada em etapa separada.
+          </p>
+        </div>
+
+        <button class="button button--primary button--block" type="submit" [disabled]="isLoading()">
+          @if (isLoading()) {
+            <span class="button__spinner" aria-hidden="true"></span>
+          }
+          {{ isLoading() ? 'Emitindo cobrança...' : 'Emitir cobrança' }}
+        </button>
+      </form>
+
+      <aside class="request-briefing surface-card">
+        <span class="section-kicker">Padrão operacional</span>
+        <h2 class="section-title">Cobrança emitida antes da transferência.</h2>
+        <p class="section-copy">
+          A cobrança protege valor, favorecido e identificador antes da transferência seguir para
+          autorização.
+        </p>
+
+        <ul class="feature-stack">
+          <li>
+            <strong>Valor padronizado</strong>
+            <span>Validação local e remota antes da emissão do link.</span>
+          </li>
+          <li>
+            <strong>Compartilhamento imediato</strong>
+            <span>Link pronto para copia ou envio nativo sem retrabalho manual.</span>
+          </li>
+          <li>
+            <strong>Extrato separado</strong>
+            <span>A cobrança nasce aqui e a liquidação aparece depois no extrato.</span>
+          </li>
+        </ul>
+      </aside>
+    </section>
+  } @else {
+    <section class="request-created">
+      <article class="receipt-card surface-card">
+        <span class="section-kicker">Cobrança emitida</span>
+        <h2 class="receipt-card__value">{{ formattedValue() }}</h2>
+        <p class="section-copy">
+          A cobrança foi criada com sucesso. Agora o próximo passo é compartilhar o link de
+          validação.
+        </p>
+
+        <div class="receipt-card__actions">
+          <button class="button button--primary" type="button" (click)="copyShareLink()">
+            Copiar link
+          </button>
+          @if (canNativeShare) {
+            <button class="button button--secondary" type="button" (click)="shareRequest()">
+              Compartilhar
+            </button>
+          }
+          <a
+            class="button button--secondary"
+            [routerLink]="['/payment-request', createdPaymentRequest()!.id]"
+          >
+            Ver cobrança
+          </a>
+          <button class="button button--ghost" type="button" (click)="reset()">
+            Nova cobrança
+          </button>
+        </div>
+      </article>
+
+      <div class="request-created__side">
+        <article class="share-card surface-card">
+          <div class="share-card__header">
+            <span class="section-kicker">Compartilhamento</span>
+            <h2 class="section-title">Link pronto para validação</h2>
+            <p class="section-copy">
+              Envie o link abaixo para que a outra parte confirme valor e favorecido antes da
+              transferência vinculada à cobrança.
+            </p>
+          </div>
+
+          <div class="readonly-grid share-card__summary">
+            <div class="readonly-field">
+              <span class="readonly-field__label">Valor</span>
+              <strong class="readonly-field__value">{{ formattedValue() }}</strong>
+            </div>
+            <div class="readonly-field">
+              <span class="readonly-field__label">Identificador</span>
+              <strong class="readonly-field__value">{{ createdPaymentRequest()!.id }}</strong>
+            </div>
+          </div>
+
+          <label class="share-field" for="share-url">
+            <span class="readonly-field__label">Link da cobrança</span>
+            <input id="share-url" class="share-input" [value]="shareUrl()" readonly />
+          </label>
+
+          @if (shareMessage()) {
+            <div class="alert" aria-live="polite">
+              <p>{{ shareMessage() }}</p>
+            </div>
+          }
+
+          <ol class="share-steps">
+            <li>Compartilhe o link sem reenviar o valor manualmente.</li>
+            <li>A outra parte valida a cobrança antes da transferência.</li>
+            <li>A operação concluída passa a aparecer no extrato da conta.</li>
+          </ol>
+        </article>
+
+        <article class="request-qr-card surface-card">
+          <span class="section-kicker">QR da cobrança</span>
+          <h2 class="section-title">Abrir QR em tela dedicada</h2>
+          <p class="section-copy">
+            Use uma tela isolada para apresentar um QR que abre a cobrança no fluxo de
+            transferência.
+          </p>
+
+          <div class="readonly-grid">
+            <div class="readonly-field">
+              <span class="readonly-field__label">Identificador</span>
+              <strong class="readonly-field__value">{{ createdPaymentRequest()!.id }}</strong>
+            </div>
+          </div>
+
+          <a
+            class="button button--secondary button--block"
+            routerLink="/qr"
+            [queryParams]="{ paymentRequest: createdPaymentRequest()!.id }"
+          >
+            Abrir QR da cobrança
+          </a>
+        </article>
+      </div>
+    </section>
+  }
+</section>

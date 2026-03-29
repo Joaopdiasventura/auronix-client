@@ -1,0 +1,82 @@
+@if (isAuthRoute()) {
+  <main class="auth-stage">
+    <router-outlet />
+  </main>
+} @else if(user()) {
+  <div class="app-root workspace-shell">
+    <aside class="workspace-sidebar">
+      <a class="brand-block" routerLink="/">
+        <span class="brand-mark">
+          <img alt="Auronix" height="44" ngSrc="/icon.svg" priority width="42" />
+        </span>
+
+        <div class="brand-copy">
+          <span>Auronix Bank</span>
+          <strong>Conta digital para cobranças, transferências e leitura operacional.</strong>
+        </div>
+      </a>
+
+      <nav class="workspace-nav" aria-label="Navegação principal">
+        @for (item of navigation; track item.route) {
+          <a
+            class="nav-link"
+            [attr.aria-label]="item.ariaLabel"
+            [routerLink]="item.route"
+            routerLinkActive="nav-link--active"
+            [routerLinkActiveOptions]="{ exact: item.exact }"
+          >
+            <span class="nav-link__icon">
+              <app-icon [name]="item.icon" />
+            </span>
+
+            <span class="nav-link__copy">
+              <strong>{{ item.label }}</strong>
+              <span>{{ item.helper }}</span>
+            </span>
+          </a>
+        }
+      </nav>
+
+      <section class="sidebar-summary">
+        <div class="sidebar-summary__identity">
+          <div class="account-badge">{{ userInitials() }}</div>
+
+          <div>
+            <strong>{{ user()?.name || 'Conta protegida' }}</strong>
+            <span>{{ userDescriptor() }}</span>
+          </div>
+        </div>
+
+        <div class="sidebar-summary__balance">
+          <span>Saldo disponível</span>
+          <strong>{{ balanceLabel() }}</strong>
+        </div>
+
+        <a class="button button--ghost button--block" routerLink="/profile">Abrir perfil</a>
+      </section>
+    </aside>
+
+    <div class="workspace-frame">
+      <div class="workspace-content">
+        <router-outlet />
+      </div>
+    </div>
+  </div>
+
+  <nav class="workspace-mobile-nav" aria-label="Navegação principal mobile">
+    @for (item of navigation; track item.route) {
+      <a
+        class="mobile-nav__link"
+        [attr.aria-label]="item.ariaLabel"
+        [routerLink]="item.route"
+        routerLinkActive="mobile-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: item.exact }"
+      >
+        <app-icon [name]="item.icon" />
+        <span>{{ item.mobileLabel }}</span>
+      </a>
+    }
+  </nav>
+}
+
+<app-notification-toast />

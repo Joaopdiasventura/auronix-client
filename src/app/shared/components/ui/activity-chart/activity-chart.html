@@ -1,0 +1,66 @@
+<section class="activity-chart">
+  <div class="activity-chart__header">
+    <div>
+      <span class="activity-chart__kicker">Atividade recente</span>
+      <h2 class="activity-chart__title">{{ title() }}</h2>
+    </div>
+
+    @if (description()) {
+      <p class="activity-chart__description">{{ description() }}</p>
+    }
+  </div>
+
+  @if (linePoints().length) {
+    <svg
+      class="activity-chart__graphic"
+      viewBox="0 0 100 56"
+      role="img"
+      [attr.aria-label]="chartLabel()"
+    >
+      <line class="activity-chart__axis" x1="18" y1="6" x2="18" y2="42.5" />
+
+      @for (axisLabel of axisLabels(); track axisLabel.id) {
+        <text class="activity-chart__axis-label" x="0.5" [attr.y]="axisLabel.y + 1">
+          {{ axisLabel.label }}
+        </text>
+      }
+
+      <line
+        class="activity-chart__baseline"
+        x1="18"
+        [attr.y1]="zeroLineY()"
+        x2="100"
+        [attr.y2]="zeroLineY()"
+      />
+
+      @if (linePoints().length > 1) {
+        <polyline class="activity-chart__line" fill="none" [attr.points]="linePath()" />
+      }
+
+      @for (point of linePoints(); track point.id) {
+        <g>
+          <circle
+            class="activity-chart__point"
+            [class.activity-chart__point--out]="point.direction == 'out'"
+            [attr.cx]="point.x"
+            [attr.cy]="point.y"
+            r="2.1"
+          >
+            <title>{{ point.description }} - {{ point.valueLabel }}</title>
+          </circle>
+          <text class="activity-chart__tick" [attr.x]="point.x" y="52">
+            {{ point.label }}
+          </text>
+        </g>
+      }
+    </svg>
+
+    <ul class="visually-hidden">
+      @for (point of linePoints(); track point.id) {
+        <li>{{ point.description }}: {{ point.valueLabel }}</li>
+      }
+    </ul>
+  } @else {
+    <p class="activity-chart__empty">Ainda não há movimentações suficientes para formar a série.</p>
+  }
+</section>

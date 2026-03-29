@@ -1,0 +1,27 @@
+@if (toasts().length) {
+  <section class="toast-shell" aria-live="polite">
+    <div class="toast-stack">
+      @for (toast of toasts(); track toast.id) {
+        <div [class]="toastClass(toast)" [attr.role]="toastRole(toast)">
+          <div class="toast-copy">
+            <strong>{{ toast.title }}</strong>
+            <p>{{ toast.message }}</p>
+          </div>
+
+          <div class="toast-actions">
+            <button class="toast-button toast-button--primary" type="button" (click)="open(toast)">
+              Abrir
+            </button>
+            <button
+              class="toast-button toast-button--ghost"
+              type="button"
+              (click)="dismiss(toast.id)"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+}

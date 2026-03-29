@@ -1,0 +1,167 @@
+<section class="page-shell" [attr.aria-busy]="shouldShowSkeleton() ? 'true' : null">
+  <app-page-header
+    description="Resumo da conta com saldo, fluxo recente e os próximos passos operacionais."
+    kicker="Painel"
+    [title]="'Olá, ' + userName()"
+  />
+
+  @if (errorMessage()) {
+    <div class="alert alert--error" aria-live="polite">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  <section class="dashboard-hero surface-card" [class.content-fade-in]="!shouldShowSkeleton()">
+    @if (shouldShowSkeleton()) {
+      <div class="dashboard-hero__body" aria-hidden="true">
+        <app-skeleton height="0.72rem" width="7rem" />
+        <app-skeleton height="4.4rem" width="17rem" />
+        <app-skeleton height="0.9rem" width="100%" />
+        <app-skeleton height="0.9rem" width="82%" />
+      </div>
+
+      <div class="dashboard-hero__aside" aria-hidden="true">
+        <div class="dashboard-hero__meta">
+          @for (item of heroFactSkeletonItems; track item) {
+            <div class="dashboard-hero__fact">
+              <app-skeleton height="0.65rem" width="4.5rem" />
+              <app-skeleton height="0.95rem" width="11rem" />
+            </div>
+          }
+        </div>
+
+        <div class="dashboard-hero__actions">
+          <app-skeleton height="2.75rem" radius="var(--radius-pill)" width="100%" />
+        </div>
+      </div>
+    } @else {
+      <div class="dashboard-hero__body">
+        <span class="section-kicker">Saldo disponível</span>
+        <h2 class="dashboard-hero__value">{{ balanceLabel() }}</h2>
+        <p class="section-copy">
+          Use o saldo como referência para emitir cobranças, validar cobranças e acompanhar o fluxo
+          mais recente da conta.
+        </p>
+      </div>
+
+      <div class="dashboard-hero__aside">
+        <div class="dashboard-hero__meta" aria-label="Resumo do painel">
+          <div class="dashboard-hero__fact">
+            <span>Titular</span>
+            <strong>{{ userName() }}</strong>
+          </div>
+
+          <div class="dashboard-hero__fact">
+            <span>Leitura</span>
+            <strong>Saldo e extrato recente</strong>
+          </div>
+        </div>
+
+        <div class="dashboard-hero__actions">
+          <a class="button button--primary" routerLink="/transfer/key">Transferir</a>
+          <a class="button button--secondary" routerLink="/payment-request/create">
+            Nova cobrança
+          </a>
+          <a class="button button--ghost" routerLink="/transfer">Abrir extrato</a>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section
+    aria-label="Indicadores do painel"
+    class="dashboard-metrics"
+    [class.content-fade-in]="!shouldShowSkeleton()"
+  >
+    @if (shouldShowSkeleton()) {
+      @for (item of metricSkeletonItems; track item) {
+        <app-skeleton-metric-card />
+      }
+    } @else {
+      @for (metric of dashboardMetrics(); track metric.label) {
+        <app-metric-card
+          [helper]="metric.helper"
+          [label]="metric.label"
+          [tone]="metric.tone"
+          [value]="metric.value"
+        />
+      }
+    }
+  </section>
+
+  <section class="dashboard-content">
+    <section class="dashboard-ledger surface-card" [class.content-fade-in]="!shouldShowSkeleton()">
+      @if (shouldShowSkeleton()) {
+        <div class="section-heading" aria-hidden="true">
+          <div class="dashboard-ledger__copy">
+            <app-skeleton height="0.72rem" width="8rem" />
+            <app-skeleton height="1.2rem" width="11rem" />
+            <app-skeleton height="0.85rem" width="100%" />
+            <app-skeleton height="0.85rem" width="74%" />
+          </div>
+
+          <app-skeleton height="0.95rem" width="8rem" />
+        </div>
+
+        <div class="ledger-list" aria-hidden="true">
+          @for (item of ledgerSkeletonItems; track item) {
+            <app-skeleton-list-row variant="ledger" />
+          }
+        </div>
+      } @else {
+        <div class="section-heading">
+          <div class="dashboard-ledger__copy">
+            <span class="section-kicker">Extrato recente</span>
+            <h2 class="section-title">Últimas transferências</h2>
+            <p class="section-copy">
+              Entradas e saídas com leitura densa de contraparte, data e valor.
+            </p>
+          </div>
+
+          <a class="text-link" routerLink="/transfer">Ver extrato completo</a>
+        </div>
+
+        @if (hasTransfers()) {
+          <div class="ledger-list">
+            @for (transfer of recentTransfers(); track transfer.id) {
+              <a class="ledger-row" [routerLink]="['/transfer', transfer.id]">
+                <div class="ledger-row__main">
+                  <div class="ledger-row__headline">
+                    <strong>{{ transfer.description }}</strong>
+                    <app-status-chip
+                      [label]="statusLabel(transfer.status)"
+                      [tone]="statusTone(transfer.status)"
+                    />
+                  </div>
+
+                  <span>{{ resolveTransferCounterparty(transfer) }}</span>
+                </div>
+
+                <div class="ledger-row__meta">
+                  <span>{{ resolveTransferDate(transfer) }}</span>
+                  <strong
+                    class="ledger-row__amount"
+                    [class.ledger-row__amount--out]="isOutgoingTransfer(transfer)"
+                  >
+                    {{ resolveTransferValue(transfer) }}
+                  </strong>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <app-empty-state
+            description="Assim que uma cobrança for paga, as movimentações mais recentes aparecem aqui."
+            eyebrow="Extrato"
+            title="Nenhuma transferência concluída."
+          >
+            <a class="button button--secondary" routerLink="/transfer/key">Transferir</a>
+            <a class="button button--primary" routerLink="/payment-request/create">
+              Emitir cobrança
+            </a>
+          </app-empty-state>
+        }
+      }
+    </section>
+  </section>
+</section>

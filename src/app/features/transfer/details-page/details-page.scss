@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.details-skeleton,
+.details-layout {
+  display: grid;
+  gap: var(--section-gap);
+}
+
+.details-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 23rem);
+}
+
+.details-summary,
+.details-meta {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.details-summary__top {
+  display: flex;
+  gap: var(--panel-gap);
+  align-items: start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.details-summary__amount {
+  margin-top: 0.4rem;
+  color: var(--color-text);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.counterparty-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--panel-gap);
+}
+
+.details-note {
+  display: grid;
+  gap: var(--stack-sm);
+  padding: 0.125rem 0 0.125rem 1rem;
+  border-left: 2px solid var(--color-brand);
+}
+
+.details-note strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.details-note .section-kicker {
+  color: var(--color-brand);
+}
+
+.details-note span {
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.timeline {
+  display: grid;
+  gap: 0;
+}
+
+.timeline__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--stack-md);
+  align-items: start;
+  padding: 0.125rem 0 0.875rem;
+}
+
+.timeline__dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-top: 0.25rem;
+  border-radius: 50%;
+  background: var(--color-stroke-strong);
+}
+
+.timeline__item--current .timeline__dot {
+  background: var(--color-brand);
+}
+
+.timeline__content {
+  display: grid;
+  gap: var(--stack-xs);
+  padding-bottom: 0.125rem;
+  border-bottom: 1px solid var(--color-stroke);
+}
+
+.timeline__content strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.timeline__content span,
+.timeline__content p {
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.timeline__content p {
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .details-layout,
+  .counterparty-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,139 @@
+<section class="page-shell">
+  <app-page-header
+    description="Gerencie seus dados principais, acompanhe informações da conta e encerre a sessão quando necessário."
+    kicker="Perfil"
+    title="Dados da conta"
+  />
+
+  @if (errorMessage()) {
+    <div class="alert alert--error" aria-live="polite">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="alert alert--success" aria-live="polite">
+      <p>{{ successMessage() }}</p>
+    </div>
+  }
+
+  <section class="profile-layout">
+    <form class="profile-form surface-card" (submit)="save($event)" novalidate>
+      <div class="profile-form__copy">
+        <span class="section-kicker">Informações principais</span>
+        <h2 class="section-title">Atualize nome e e-mail da conta</h2>
+        <p class="section-copy">
+          Esses dados são usados para identificação da conta e leitura dos fluxos financeiros.
+        </p>
+      </div>
+
+      <app-input
+        autocomplete="name"
+        label="Nome completo"
+        name="name"
+        placeholder="Como a conta será identificada"
+        [formField]="profileForm.name"
+      />
+
+      <app-input
+        autocomplete="email"
+        inputMode="email"
+        label="E-mail"
+        name="email"
+        placeholder="voce@empresa.com"
+        type="email"
+        [formField]="profileForm.email"
+      />
+
+      <button class="button button--primary button--block" type="submit" [disabled]="isSaving()">
+        @if (isSaving()) {
+          <span class="button__spinner" aria-hidden="true"></span>
+        }
+        {{ isSaving() ? 'Salvando perfil...' : 'Salvar alterações' }}
+      </button>
+    </form>
+
+    <aside class="profile-summary-stack">
+      <article class="profile-summary surface-card">
+        <div class="profile-summary__section">
+          <span class="section-kicker">Resumo da conta</span>
+          <div class="readonly-grid">
+            <div class="readonly-field">
+              <span class="readonly-field__label">Titular</span>
+              <strong class="readonly-field__value">{{ user()?.name || '-' }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">E-mail</span>
+              <strong class="readonly-field__value">{{ user()?.email || '-' }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Saldo disponível</span>
+              <strong class="readonly-field__value">{{ balanceLabel() }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Conta</span>
+              <strong class="readonly-field__value">{{ user()?.id || '-' }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Criada em</span>
+              <strong class="readonly-field__value">{{ userCreatedAt() }}</strong>
+            </div>
+
+            <div class="readonly-field">
+              <span class="readonly-field__label">Atualizada em</span>
+              <strong class="readonly-field__value">{{ userUpdatedAt() }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-summary__section">
+          <span class="section-kicker">Sessão</span>
+          <p class="section-copy">
+            Se precisar trocar de conta ou encerrar a sessão, use a ação abaixo.
+          </p>
+          <button
+            class="button button--ghost button--block"
+            type="button"
+            [disabled]="isLoggingOut()"
+            (click)="logout()"
+          >
+            @if (isLoggingOut()) {
+              <span class="button__spinner" aria-hidden="true"></span>
+            }
+            {{ isLoggingOut() ? 'Encerrando sessão...' : 'Encerrar sessão' }}
+          </button>
+        </div>
+      </article>
+
+      @if (user()?.email) {
+        <article class="profile-qr-card surface-card">
+          <span class="section-kicker">QR da conta</span>
+          <h2 class="section-title">Abrir QR da conta em tela dedicada</h2>
+          <p class="section-copy">
+            Use uma tela dedicada para apresentar ou baixar um QR que abre a transferência para a
+            conta atual.
+          </p>
+
+          <div class="readonly-grid">
+            <div class="readonly-field">
+              <span class="readonly-field__label">E-mail da conta</span>
+              <strong class="readonly-field__value">{{ user()!.email }}</strong>
+            </div>
+          </div>
+
+          <a
+            class="button button--secondary button--block"
+            routerLink="/qr"
+            [queryParams]="{ email: user()!.email }"
+          >
+            Abrir QR da conta
+          </a>
+        </article>
+      }
+    </aside>
+  </section>
+</section>

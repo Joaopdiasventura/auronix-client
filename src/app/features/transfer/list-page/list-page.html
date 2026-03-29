@@ -1,0 +1,127 @@
+<section class="page-shell" [attr.aria-busy]="shouldShowSkeleton() ? 'true' : null">
+  <app-page-header
+    description="Extrato paginado por cursor com leitura densa de valor, natureza, contraparte e horário."
+    kicker="Transferências"
+    title="Extrato da conta"
+  >
+    <a class="button button--ghost" pageHeaderActions routerLink="/">Voltar ao painel</a>
+  </app-page-header>
+
+  @if (errorMessage()) {
+    <div class="alert alert--error" aria-live="polite">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  <section class="history-overview" [class.content-fade-in]="!shouldShowSkeleton()">
+    @if (shouldShowSkeleton()) {
+      @for (item of metricSkeletonItems; track item) {
+        <app-skeleton-metric-card />
+      }
+    } @else {
+      @for (metric of pageMetrics(); track metric.label) {
+        <app-metric-card
+          [helper]="metric.helper"
+          [label]="metric.label"
+          [tone]="metric.tone"
+          [value]="metric.value"
+        />
+      }
+    }
+  </section>
+
+  <section class="history-panel surface-card" [class.content-fade-in]="!shouldShowSkeleton()">
+    @if (shouldShowSkeleton()) {
+      <div class="history-toolbar" aria-hidden="true">
+        <div class="history-panel__copy">
+          <app-skeleton height="0.72rem" width="5rem" />
+          <app-skeleton height="1.2rem" width="13rem" />
+          <app-skeleton height="0.85rem" width="100%" />
+          <app-skeleton height="0.85rem" width="70%" />
+        </div>
+
+        <div class="history-toolbar__actions">
+          <app-skeleton height="2.75rem" radius="var(--radius-pill)" width="9.5rem" />
+          <app-skeleton height="2.75rem" radius="var(--radius-pill)" width="13rem" />
+        </div>
+      </div>
+
+      <div class="history-list" aria-hidden="true">
+        @for (item of historySkeletonItems; track item) {
+          <app-skeleton-list-row variant="history" />
+        }
+      </div>
+    } @else {
+      <div class="history-toolbar">
+        <div class="history-panel__copy">
+          <span class="section-kicker">Página {{ page() + 1 }}</span>
+          <h2 class="section-title">Movimentações liquidadas</h2>
+          <p class="section-copy">
+            Cada linha preserva o contexto da operação com leitura direta de natureza e valor.
+          </p>
+        </div>
+
+        <div class="history-toolbar__actions">
+          <a class="button button--primary" routerLink="/transfer/key">Transferir</a>
+
+          <div class="history-toolbar__pager">
+            <button
+              class="button button--ghost"
+              type="button"
+              [disabled]="!hasPreviousPage()"
+              (click)="goToPreviousPage()"
+            >
+              Anterior
+            </button>
+            <button
+              class="button button--secondary"
+              type="button"
+              [disabled]="!hasNextPage()"
+              (click)="goToNextPage()"
+            >
+              Próxima
+            </button>
+          </div>
+        </div>
+      </div>
+
+      @if (hasTransfers()) {
+        <div class="history-list">
+          @for (transfer of transfers(); track transfer.id) {
+            <a class="history-row" [routerLink]="['/transfer', transfer.id]">
+              <div class="history-row__main">
+                <div class="history-row__headline">
+                  <strong>{{ resolveDescription(transfer) }}</strong>
+                  <app-status-chip
+                    [label]="statusLabel(transfer.status)"
+                    [tone]="statusTone(transfer.status)"
+                  />
+                </div>
+
+                <span>{{ resolveCounterparty(transfer) }}</span>
+              </div>
+
+              <div class="history-row__nature">
+                <span>{{ resolveNature(transfer) }}</span>
+                <small>{{ formatCompletedAt(transfer) }}</small>
+              </div>
+
+              <strong
+                class="history-row__amount"
+                [class.history-row__amount--out]="isOutgoingTransfer(transfer)"
+              >
+                {{ formatAmount(transfer) }}
+              </strong>
+            </a>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          description="As transferências concluídas passam a aparecer aqui assim que a primeira cobrança for paga."
+          eyebrow="Extrato"
+          title="Seu extrato ainda está vazio."
+        />
+      }
+    }
+  </section>
+</section>

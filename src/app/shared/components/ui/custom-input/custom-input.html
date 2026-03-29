@@ -1,0 +1,26 @@
+<label class="input-shell" [class.input-shell--invalid]="hasError()" [for]="inputId()">
+  <span class="input-label">{{ label() }}</span>
+  <input
+    class="input-control"
+    [id]="inputId()"
+    [type]="type()"
+    [formField]="formField()"
+    [autocomplete]="autocomplete()"
+    [inputMode]="inputMode()"
+    [placeholder]="placeholder()"
+    [attr.aria-describedby]="describedBy() || null"
+    [attr.aria-invalid]="hasError() ? 'true' : 'false'"
+  />
+</label>
+
+@if (hint() || hasError()) {
+  <div class="input-support">
+    @if (hint()) {
+      <p class="input-hint" [id]="hintId()">{{ hint() }}</p>
+    }
+
+    @if (hasError()) {
+      <p class="error-message" [id]="errorId()" aria-live="polite">{{ errorMessage() }}</p>
+    }
+  </div>
+}

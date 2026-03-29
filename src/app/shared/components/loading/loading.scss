@@ -1,0 +1,38 @@
+:host {
+  display: grid;
+  justify-items: center;
+  padding: 1rem;
+}
+
+.loading-card {
+  display: grid;
+  justify-items: center;
+  gap: var(--stack-md);
+  min-width: min(18rem, 100%);
+  padding: 1rem;
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-1);
+  box-shadow: var(--shadow-1);
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgb(255 255 255 / 0.12);
+  border-top-color: var(--color-brand-strong);
+  border-radius: 50%;
+  animation: loading-spin 900ms linear infinite;
+}
+
+.loading-message {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-weight: 600;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

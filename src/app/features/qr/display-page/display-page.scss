@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.qr-page-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+  gap: var(--section-gap);
+}
+
+.qr-page-summary {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+@media (max-width: 960px) {
+  .qr-page-layout {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,69 @@
+:host {
+  display: block;
+}
+
+.input-shell {
+  display: grid;
+  gap: var(--stack-sm);
+}
+
+.input-label {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.input-control {
+  width: 100%;
+  min-height: var(--control-height-md);
+  padding: 0.6875rem var(--control-padding-x);
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font: inherit;
+  line-height: 1.35;
+  transition:
+    border-color var(--motion-base),
+    background-color var(--motion-base),
+    outline-color var(--motion-base);
+}
+
+.input-control::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input-control:hover {
+  border-color: rgb(255 255 255 / 0.16);
+}
+
+.input-control:focus-visible {
+  outline: none;
+  border-color: var(--color-brand-strong);
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.input-shell--invalid .input-control {
+  border-color: rgb(194 111 101 / 0.54);
+}
+
+.input-support {
+  display: grid;
+  gap: var(--stack-xs);
+}
+
+.input-hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.error-message {
+  margin: 0;
+  color: #efb1a9;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}

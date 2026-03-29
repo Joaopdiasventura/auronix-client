@@ -1,0 +1,94 @@
+<section class="auth-shell">
+  <div class="auth-panel surface-card">
+    <div class="auth-brand">
+      <span class="auth-brand__mark">
+        <img alt="Auronix" height="40" ngSrc="/icon.svg" priority width="38" />
+      </span>
+
+      <div class="auth-brand__copy">
+        <strong>Auronix Bank</strong>
+        <span>Cadastro inicial para emissão de cobranças e leitura de extrato.</span>
+      </div>
+    </div>
+
+    <div class="auth-copy">
+      <span class="section-kicker">Cadastro</span>
+      <h1>Abra sua conta digital</h1>
+      <p>
+        Crie o acesso inicial para emitir cobranças, validar cobranças e acompanhar transferências.
+      </p>
+    </div>
+
+    <form class="auth-form" (submit)="submit($event)" novalidate>
+      @if (errorMessage()) {
+        <div class="alert alert--error" aria-live="polite">
+          <p>{{ errorMessage() }}</p>
+        </div>
+      }
+
+      <app-input
+        autocomplete="name"
+        label="Nome completo"
+        name="name"
+        placeholder="Como a conta será identificada"
+        [formField]="createUserForm.name"
+      />
+
+      <app-input
+        autocomplete="email"
+        inputMode="email"
+        label="E-mail"
+        name="email"
+        placeholder="voce@empresa.com"
+        type="email"
+        [formField]="createUserForm.email"
+      />
+
+      <app-input
+        autocomplete="new-password"
+        hint="Use ao menos 8 caracteres, com letra maiúscula, minúscula, número e símbolo."
+        label="Senha"
+        name="password"
+        placeholder="Crie uma senha forte"
+        type="password"
+        [formField]="createUserForm.password"
+      />
+
+      <button class="button button--primary button--block" type="submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="button__spinner" aria-hidden="true"></span>
+        }
+        {{ isLoading() ? 'Criando conta...' : 'Criar conta' }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Já possui acesso?
+      <a routerLink="/user/login">Entrar agora</a>
+    </p>
+  </div>
+
+  <aside class="auth-side surface-card">
+    <span class="section-kicker">Conta pronta para operar</span>
+    <h2 class="section-title">Cadastro objetivo, regras consistentes e fluxo financeiro único.</h2>
+    <p class="section-copy">
+      Depois do cadastro, o painel passa a reunir cobranças, validação de links e transferências no
+      mesmo ambiente.
+    </p>
+
+    <ul class="feature-stack">
+      <li>
+        <strong>Identidade da conta</strong>
+        <span>Nome e e-mail estruturam a identificação principal do usuário.</span>
+      </li>
+      <li>
+        <strong>Senha validada</strong>
+        <span>Os mesmos requisitos de segurança se mantêm entre cadastro e login.</span>
+      </li>
+      <li>
+        <strong>Fluxo único de recebimento</strong>
+        <span>Cobranças e transferências permanecem encadeadas na mesma trilha.</span>
+      </li>
+    </ul>
+  </aside>
+</section>

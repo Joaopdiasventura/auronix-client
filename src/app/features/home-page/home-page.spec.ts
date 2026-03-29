@@ -1,0 +1,172 @@
+import { signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { of, Subject } from 'rxjs';
+import { vi } from 'vitest';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { NotificationService } from '../../core/services/notification/notification.service';
+import { TransferService } from '../../core/services/transfer/transfer.service';
+import { UserService } from '../../core/services/user/user.service';
+import { HomePage } from './home-page';
+
+describe('HomePage', () => {
+  let fixture: ComponentFixture<HomePage>;
+  let dashboardRefresh$: Subject<unknown>;
+
+  const dashboardTransfers = [
+    {
+      id: 'transfer-id',
+      value: 5000,
+      description: 'Pedido principal',
+      status: 'completed',
+      failureReason: null,
+      completedAt: '2026-03-29T10:00:00.000Z',
+      createdAt: '2026-03-29T09:58:00.000Z',
+      updatedAt: '2026-03-29T10:00:00.000Z',
+      payer: { id: 'user-id', name: 'Joao' },
+      payee: { id: 'payee-id', name: 'Maria' },
+    },
+    {
+      id: 'transfer-id-2',
+      value: 3500,
+      description: 'Pedido complementar',
+      status: 'completed',
+      failureReason: null,
+      completedAt: '2026-03-29T16:00:00.000Z',
+      createdAt: '2026-03-29T15:58:00.000Z',
+      updatedAt: '2026-03-29T16:00:00.000Z',
+      payer: { id: 'payer-id', name: 'Carlos' },
+      payee: { id: 'user-id', name: 'Joao' },
+    },
+    {
+      id: 'transfer-id-3',
+      value: 2200,
+      description: 'Pedido diário seguinte',
+      status: 'completed',
+      failureReason: null,
+      completedAt: '2026-03-30T10:00:00.000Z',
+      createdAt: '2026-03-30T09:58:00.000Z',
+      updatedAt: '2026-03-30T10:00:00.000Z',
+      payer: { id: 'payer-id-2', name: 'Ana' },
+      payee: { id: 'user-id', name: 'Joao' },
+    },
+  ];
+
+  const authService = {
+    data: signal({
+      id: 'user-id',
+      email: 'joao@auronix.com',
+      name: 'Joao',
+      balance: 125000,
+      createdAt: '2026-03-29T00:00:00.000Z',
+      updatedAt: '2026-03-29T00:00:00.000Z',
+    }),
+    clear: vi.fn(),
+    isLoggedIn: () => true,
+    update: vi.fn((user) => authService.data.set(user)),
+  };
+
+  const notificationService = {
+    connect: vi.fn(),
+  };
+
+  const transferService = {
+    findMany: vi.fn(),
+  };
+
+  const userService = {
+    logout: vi.fn().mockReturnValue(of(void 0)),
+  };
+
+  async function createComponent(): Promise<void> {
+    await TestBed.configureTestingModule({
+      imports: [HomePage],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authService },
+        { provide: NotificationService, useValue: notificationService },
+        { provide: TransferService, useValue: transferService },
+        { provide: UserService, useValue: userService },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HomePage);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+  }
+
+  beforeEach(() => {
+    TestBed.resetTestingModule();
+    vi.clearAllMocks();
+
+    dashboardRefresh$ = new Subject();
+    notificationService.connect.mockReturnValue(dashboardRefresh$.asObservable());
+    transferService.findMany.mockReturnValue(
+      of({
+        data: dashboardTransfers,
+        next: null,
+      }),
+    );
+  });
+
+  it('renders the user name and latest transfer', async () => {
+    await createComponent();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+
+    expect(nativeElement.textContent).toContain('Olá, Joao');
+    expect(nativeElement.textContent).toContain('Pedido principal');
+    expect(nativeElement.querySelector('.dashboard-ledger')).not.toBeNull();
+  });
+
+  it('renders the structural skeleton while the dashboard request is pending', async () => {
+    const dashboardResponse$ = new Subject<{ data: typeof dashboardTransfers; next: null }>();
+    transferService.findMany.mockReturnValue(dashboardResponse$.asObservable());
+
+    await createComponent();
+
+    let nativeElement = fixture.nativeElement as HTMLElement;
+
+    expect(nativeElement.querySelector('app-skeleton-metric-card')).not.toBeNull();
+    expect(nativeElement.querySelector('app-skeleton-list-row')).not.toBeNull();
+    expect(nativeElement.querySelector('.page-shell')?.getAttribute('aria-busy')).toBe('true');
+    expect(nativeElement.textContent).not.toContain('Pedido principal');
+
+    dashboardResponse$.next({ data: dashboardTransfers, next: null });
+    dashboardResponse$.complete();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    nativeElement = fixture.nativeElement as HTMLElement;
+
+    expect(nativeElement.querySelector('app-skeleton-metric-card')).toBeNull();
+    expect(nativeElement.querySelector('.page-shell')?.hasAttribute('aria-busy')).toBe(false);
+    expect(nativeElement.textContent).toContain('Pedido principal');
+  });
+
+  it('keeps the rendered content visible during background refreshes', async () => {
+    const refreshResponse$ = new Subject<{ data: typeof dashboardTransfers; next: null }>();
+    transferService.findMany
+      .mockReturnValueOnce(
+        of({
+          data: dashboardTransfers,
+          next: null,
+        }),
+      )
+      .mockReturnValueOnce(refreshResponse$.asObservable());
+
+    await createComponent();
+
+    dashboardRefresh$.next({});
+    fixture.detectChanges();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+
+    expect(transferService.findMany).toHaveBeenCalledTimes(2);
+    expect(nativeElement.textContent).toContain('Pedido principal');
+    expect(nativeElement.querySelector('app-skeleton-metric-card')).toBeNull();
+    expect(nativeElement.querySelector('.page-shell')?.hasAttribute('aria-busy')).toBe(false);
+  });
+});

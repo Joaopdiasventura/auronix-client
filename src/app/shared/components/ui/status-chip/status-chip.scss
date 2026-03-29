@@ -1,0 +1,44 @@
+:host {
+  display: inline-flex;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5625rem;
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.02);
+  color: var(--color-text-soft);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.status-chip--success {
+  border-color: rgb(98 168 116 / 0.28);
+  background: rgb(98 168 116 / 0.1);
+  color: #9ad4a4;
+}
+
+.status-chip--danger {
+  border-color: rgb(194 111 101 / 0.28);
+  background: rgb(194 111 101 / 0.1);
+  color: #f0aba2;
+}
+
+.status-chip--warning {
+  border-color: rgb(184 154 102 / 0.28);
+  background: rgb(184 154 102 / 0.1);
+  color: #d8bb88;
+}
+
+.status-chip--info {
+  border-color: rgb(107 143 190 / 0.28);
+  background: rgb(107 143 190 / 0.1);
+  color: #a7bfd9;
+}

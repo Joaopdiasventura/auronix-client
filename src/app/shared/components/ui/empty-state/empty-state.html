@@ -1,0 +1,12 @@
+<section class="empty-state">
+  @if (eyebrow()) {
+    <span class="empty-state__eyebrow">{{ eyebrow() }}</span>
+  }
+
+  <h2 class="empty-state__title">{{ title() }}</h2>
+  <p class="empty-state__description">{{ description() }}</p>
+
+  <div class="empty-state__actions">
+    <ng-content />
+  </div>
+</section>

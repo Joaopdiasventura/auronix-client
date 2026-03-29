@@ -1,0 +1,17 @@
+<header class="page-header">
+  <div class="page-header__body">
+    @if (kicker()) {
+      <span class="page-header__kicker">{{ kicker() }}</span>
+    }
+
+    <h1 class="page-header__title">{{ title() }}</h1>
+
+    @if (description()) {
+      <p class="page-header__description">{{ description() }}</p>
+    }
+  </div>
+
+  <div class="page-header__actions">
+    <ng-content select="[pageHeaderActions]" />
+  </div>
+</header>

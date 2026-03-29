@@ -1,0 +1,121 @@
+:host {
+  display: block;
+}
+
+.request-layout,
+.request-created {
+  display: grid;
+  gap: var(--section-gap);
+}
+
+.request-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+}
+
+.request-created {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.request-form,
+.request-briefing,
+.receipt-card,
+.request-qr-card,
+.share-card {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.request-created__side {
+  display: grid;
+  align-content: start;
+  gap: var(--panel-gap);
+}
+
+.request-form__copy,
+.share-card__header {
+  display: grid;
+  gap: var(--stack-sm);
+  padding-bottom: var(--stack-sm);
+  border-bottom: 1px solid var(--color-stroke);
+}
+
+.request-note {
+  display: grid;
+  gap: var(--stack-sm);
+  padding: 0.125rem 0 0.125rem 1rem;
+  border-left: 2px solid var(--color-brand);
+}
+
+.request-note strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.request-note .section-kicker {
+  color: var(--color-brand);
+}
+
+.request-note p {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.share-card__summary {
+  gap: 0;
+}
+
+.receipt-card__value {
+  color: var(--color-text);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.receipt-card {
+  border-top: 2px solid rgb(184 154 102 / 0.58);
+}
+
+.receipt-card__actions {
+  display: flex;
+  gap: var(--stack-sm);
+  flex-wrap: wrap;
+}
+
+.share-field {
+  display: grid;
+  gap: var(--stack-sm);
+}
+
+.share-input {
+  width: 100%;
+  min-height: var(--control-height-md);
+  padding: 0.6875rem var(--control-padding-x);
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+.share-steps {
+  display: grid;
+  gap: var(--stack-sm);
+  margin: 0;
+  padding: 0.875rem 0 0 1.1rem;
+  border-top: 1px solid var(--color-stroke);
+  color: var(--color-text-muted);
+}
+
+.share-steps li {
+  line-height: 1.55;
+}
+
+@media (max-width: 960px) {
+  .request-layout,
+  .request-created {
+    grid-template-columns: 1fr;
+  }
+}

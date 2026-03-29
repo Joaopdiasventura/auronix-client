@@ -1,0 +1,179 @@
+<section class="page-shell" [attr.aria-busy]="shouldShowSkeleton() ? 'true' : null">
+  <app-page-header
+    description="Conferência da cobrança compartilhada antes da autorização da transferência."
+    kicker="Cobranças"
+    title="Validação da cobrança"
+  />
+
+  @if (feedbackState(); as state) {
+    <section
+      class="surface-card feedback-card"
+      [class.feedback-card--danger]="state.tone == 'danger'"
+    >
+      <span class="section-kicker">{{
+        state.tone == 'danger' ? 'Falha' : 'Acesso controlado'
+      }}</span>
+      <h2 class="feedback-card__title">{{ state.title }}</h2>
+      <p class="feedback-card__copy">{{ state.description }}</p>
+
+      <div class="action-row">
+        @if (!isAuthenticated()) {
+          <a class="button button--primary" routerLink="/user/login">Entrar</a>
+          <a class="button button--secondary" routerLink="/user/create">Criar conta</a>
+        } @else {
+          <a class="button button--ghost" routerLink="/">Voltar ao painel</a>
+        }
+      </div>
+    </section>
+  } @else if (shouldShowSkeleton() || paymentRequest()) {
+    <section class="request-details-layout" [class.content-fade-in]="!shouldShowSkeleton()">
+      @if (shouldShowSkeleton()) {
+        <article class="request-summary surface-card" aria-hidden="true">
+          <div class="request-summary__top">
+            <div>
+              <app-skeleton height="0.72rem" width="9rem" />
+              <app-skeleton height="4rem" width="12rem" />
+            </div>
+
+            <app-skeleton height="1.6rem" radius="var(--radius-pill)" width="8rem" />
+          </div>
+
+          <app-skeleton height="0.9rem" width="100%" />
+          <app-skeleton height="0.9rem" width="78%" />
+
+          <div class="request-summary__note">
+            <app-skeleton height="0.72rem" width="6rem" />
+            <app-skeleton height="0.95rem" width="9rem" />
+            <app-skeleton height="0.85rem" width="100%" />
+            <app-skeleton height="0.85rem" width="80%" />
+          </div>
+
+          <div class="action-row">
+            <app-skeleton height="2.75rem" radius="var(--radius-pill)" width="100%" />
+          </div>
+        </article>
+
+        <div class="request-side" aria-hidden="true">
+          <article class="request-meta surface-card">
+            <app-skeleton-readonly-grid
+              [fields]="4"
+              [labelWidths]="requestMetaSkeletonLabelWidths"
+              [valueWidths]="requestMetaSkeletonValueWidths"
+            />
+          </article>
+
+          <article class="request-qr-card surface-card">
+            <app-skeleton height="0.72rem" width="7rem" />
+            <app-skeleton height="1.2rem" width="13rem" />
+            <app-skeleton height="0.85rem" width="100%" />
+            <app-skeleton height="0.85rem" width="76%" />
+
+            <app-skeleton-readonly-grid
+              [fields]="1"
+              [labelWidths]="['6rem']"
+              [valueWidths]="['12rem']"
+            />
+
+            <app-skeleton height="2.75rem" radius="var(--radius-pill)" width="100%" />
+          </article>
+        </div>
+      } @else if (paymentRequest()) {
+        <article
+          class="request-summary surface-card"
+          [class.request-summary--payable]="canCreateTransfer()"
+        >
+          <div class="request-summary__top">
+            <div>
+              <span class="section-kicker">Cobrança confirmada</span>
+              <h2 class="request-summary__value">{{ formatValue(paymentRequest()!.value) }}</h2>
+            </div>
+
+            <app-status-chip [label]="availabilityLabel()" [tone]="availabilityTone()" />
+          </div>
+
+          <p class="section-copy">{{ summaryCopy() }}</p>
+
+          <div class="request-summary__note">
+            <span class="section-kicker">Integridade</span>
+            <strong>Handoff seguro</strong>
+            <span
+              >Valor, identificador e favorecido seguem vinculados a esta cobrança até a autorização
+              final.</span
+            >
+          </div>
+
+          <div class="action-row">
+            @if (canCreateTransfer()) {
+              <a
+                class="button button--primary"
+                routerLink="/transfer/create"
+                [queryParams]="{ paymentRequest: paymentRequest()!.id }"
+              >
+                Pagar cobrança
+              </a>
+              <a class="button button--ghost" routerLink="/transfer">Ver extrato</a>
+            } @else {
+              <a class="button button--secondary" routerLink="/payment-request/create">
+                Criar outra cobrança
+              </a>
+            }
+          </div>
+        </article>
+
+        <div class="request-side">
+          <article class="request-meta surface-card">
+            <div class="readonly-grid">
+              @if (paymentRequest()!.user?.name) {
+                <div class="readonly-field">
+                  <span class="readonly-field__label">Favorecido</span>
+                  <strong class="readonly-field__value">{{ requesterName() }}</strong>
+                </div>
+              }
+
+              <div class="readonly-field">
+                <span class="readonly-field__label">Identificador</span>
+                <strong class="readonly-field__value">{{ paymentRequest()!.id }}</strong>
+              </div>
+
+              <div class="readonly-field">
+                <span class="readonly-field__label">Criado em</span>
+                <strong class="readonly-field__value">
+                  {{ formatCreatedAt(paymentRequest()!.createdAt) }}
+                </strong>
+              </div>
+
+              <div class="readonly-field">
+                <span class="readonly-field__label">Status operacional</span>
+                <strong class="readonly-field__value">{{ availabilityLabel() }}</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="request-qr-card surface-card">
+            <span class="section-kicker">QR da cobrança</span>
+            <h2 class="section-title">Abrir QR em tela dedicada</h2>
+            <p class="section-copy">
+              Abra uma visualização exclusiva do QR para apresentar a entrada universal desta
+              cobrança.
+            </p>
+
+            <div class="readonly-grid">
+              <div class="readonly-field">
+                <span class="readonly-field__label">Identificador</span>
+                <strong class="readonly-field__value">{{ paymentRequest()!.id }}</strong>
+              </div>
+            </div>
+
+            <a
+              class="button button--secondary button--block"
+              routerLink="/qr"
+              [queryParams]="{ paymentRequest: paymentRequest()!.id }"
+            >
+              Abrir QR da cobrança
+            </a>
+          </article>
+        </div>
+      }
+    </section>
+  }
+</section>

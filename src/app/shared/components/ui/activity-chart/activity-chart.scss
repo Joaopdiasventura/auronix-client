@@ -1,0 +1,87 @@
+:host {
+  display: block;
+}
+
+.activity-chart {
+  display: grid;
+  gap: var(--panel-gap);
+  padding: 1rem;
+  border: 1px solid var(--color-stroke);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+
+.activity-chart__header {
+  display: grid;
+  gap: var(--stack-xs);
+}
+
+.activity-chart__kicker {
+  color: var(--color-brand);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.activity-chart__title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.activity-chart__description,
+.activity-chart__empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.48;
+}
+
+.activity-chart__graphic {
+  width: 100%;
+  height: auto;
+}
+
+.activity-chart__axis {
+  stroke: rgb(143 152 163 / 0.16);
+  stroke-width: 0.8;
+}
+
+.activity-chart__axis-label {
+  fill: var(--color-text-muted);
+  font-size: 2.85px;
+  font-weight: 500;
+  text-anchor: start;
+}
+
+.activity-chart__baseline {
+  stroke: rgb(143 152 163 / 0.22);
+  stroke-width: 0.8;
+  stroke-dasharray: 2 2;
+}
+
+.activity-chart__line {
+  stroke: var(--color-brand);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.activity-chart__point {
+  fill: var(--color-success);
+  stroke: var(--color-surface-2);
+  stroke-width: 0.9;
+}
+
+.activity-chart__point--out {
+  fill: var(--color-danger);
+}
+
+.activity-chart__tick {
+  fill: var(--color-text-soft);
+  font-size: 3.6px;
+  font-weight: 500;
+  text-anchor: middle;
+}

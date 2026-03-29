@@ -1,0 +1,43 @@
+<section class="qr-scanner surface-card">
+  <div class="qr-scanner__copy">
+    <span class="section-kicker">Scanner</span>
+    <h2 class="section-title">{{ title() }}</h2>
+    @if (description()) {
+      <p class="section-copy">{{ description() }}</p>
+    }
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert--error" aria-live="polite">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  @if (isSupported()) {
+    <div class="qr-scanner__viewport">
+      <video
+        #videoElement
+        aria-label="Visualização da câmera para leitura do QR code"
+        autoplay
+        class="qr-scanner__video"
+        muted
+        playsinline
+      ></video>
+      <div class="qr-scanner__frame" aria-hidden="true"></div>
+    </div>
+
+    <div class="qr-scanner__actions">
+      <button class="button button--secondary" type="button" [disabled]="isScanning()" (click)="retry()">
+        Reiniciar leitura
+      </button>
+      <button class="button button--ghost" type="button" (click)="close()">Fechar scanner</button>
+    </div>
+  } @else {
+    <div class="readonly-field">
+      <span class="readonly-field__label">Fallback</span>
+      <strong class="readonly-field__value">Use a digitação manual da chave nesta página.</strong>
+    </div>
+
+    <button class="button button--ghost" type="button" (click)="close()">Fechar scanner</button>
+  }
+</section>
