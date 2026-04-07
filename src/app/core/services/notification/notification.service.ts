@@ -24,7 +24,7 @@ export class NotificationService {
   public start(): void {
     if (this.eventSource || typeof EventSource == 'undefined') return;
 
-    const eventSource = new EventSource(this.streamUrl);
+    const eventSource = new EventSource(this.streamUrl, { withCredentials: true });
     this.listeners = Object.values(NotificationEventType).map((eventType) =>
       this.registerListener(eventSource, eventType, this.eventsSource),
     );
