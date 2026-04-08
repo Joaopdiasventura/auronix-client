@@ -155,16 +155,16 @@ This structure favors low-friction delivery for a bounded client domain. A globa
 
 ```mermaid
 flowchart TD
-  Input[Raw transfer input]
-  Parse[resolveTransferKey()]
-  Url{Is first-party URL?}
-  UrlType{URL type}
-  Email{Valid email?}
-  Request{Valid request UUID?}
-  Invalid[Reject input]
-  CanonicalEmail[Canonical email target]
-  CanonicalRequest[Canonical payment request target]
-  Authorization[Transfer authorization page]
+  Input["Raw transfer input"]
+  Parse["resolveTransferKey()"]
+  Url{"Is first-party URL?"}
+  UrlType{"URL type"}
+  Email{"Valid email?"}
+  Request{"Valid request UUID?"}
+  Invalid["Reject input"]
+  CanonicalEmail["Canonical email target"]
+  CanonicalRequest["Canonical payment request target"]
+  Authorization["Transfer authorization page"]
 
   Input --> Parse
   Parse --> Url

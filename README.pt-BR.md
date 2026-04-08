@@ -150,17 +150,16 @@ Essa estrutura favorece uma entrega de baixo atrito para um domínio de cliente 
 
 ```mermaid
 flowchart TD
-  Input[Entrada bruta de transferência]
-  Parse[resolveTransferKey()]
-  Url{É uma URL de primeira parte?}
-  UrlType{Tipo de URL}
-  Email{E-mail válido?}
-  Request{UUID de solicitação válido?}
-  Url{URL de primeira parte de transferência ou cobrança?}
-  Invalid[Rejeitar entrada]
-  CanonicalEmail[Destino canônico por e-mail]
-  CanonicalRequest[Destino canônico por solicitação de pagamento]
-  Authorization[Página de autorização de transferência]
+  Input["Entrada bruta de transferência"]
+  Parse["resolveTransferKey()"]
+  Url{"É uma URL de primeira parte?"}
+  UrlType{"Tipo de URL"}
+  Email{"E-mail válido?"}
+  Request{"UUID de solicitação válido?"}
+  Invalid["Rejeitar entrada"]
+  CanonicalEmail["Destino canônico por e-mail"]
+  CanonicalRequest["Destino canônico por solicitação de pagamento"]
+  Authorization["Página de autorização de transferência"]
 
   Input --> Parse
   Parse --> Url
