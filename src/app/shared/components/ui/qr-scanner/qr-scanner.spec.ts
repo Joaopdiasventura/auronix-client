@@ -1,32 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-
-const jsQrMock = vi.fn();
+import { QrScanner } from './qr-scanner';
 
 describe('QrScanner', () => {
-  let QrScannerComponent: typeof import('./qr-scanner').QrScanner;
-  let fixture: ComponentFixture<InstanceType<typeof QrScannerComponent>> | null = null;
-  let canvasContextSpy: ReturnType<typeof vi.spyOn>;
+  let fixture: ComponentFixture<QrScanner> | null = null;
   let originalBarcodeDetector:
     | (typeof globalThis & { BarcodeDetector?: unknown })['BarcodeDetector']
     | undefined;
   let originalMediaDevices: MediaDevices | undefined;
-  let playSpy: ReturnType<typeof vi.spyOn>;
+  let playSpy: ReturnType<typeof vi.spyOn> | null = null;
   let scannedValues: string[];
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.useFakeTimers();
-    vi.resetModules();
-    vi.doMock('jsqr', () => ({
-      default: jsQrMock,
-    }));
-    jsQrMock.mockReset();
     scannedValues = [];
-    ({ QrScanner: QrScannerComponent } = await import('./qr-scanner'));
     originalBarcodeDetector = (globalThis as { BarcodeDetector?: unknown }).BarcodeDetector;
     originalMediaDevices = navigator.mediaDevices;
     playSpy = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined as never);
-    canvasContextSpy = vi.spyOn(HTMLCanvasElement.prototype, 'getContext');
   });
 
   afterEach(() => {
@@ -34,8 +24,8 @@ describe('QrScanner', () => {
     fixture = null;
     vi.runOnlyPendingTimers();
     vi.useRealTimers();
-    playSpy.mockRestore();
-    canvasContextSpy.mockRestore();
+    playSpy?.mockRestore();
+    playSpy = null;
 
     if (originalMediaDevices) {
       Object.defineProperty(navigator, 'mediaDevices', {
@@ -64,10 +54,10 @@ describe('QrScanner', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [QrScannerComponent],
+      imports: [QrScanner],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(QrScannerComponent);
+    fixture = TestBed.createComponent(QrScanner);
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -95,10 +85,10 @@ describe('QrScanner', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [QrScannerComponent],
+      imports: [QrScanner],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(QrScannerComponent);
+    fixture = TestBed.createComponent(QrScanner);
     fixture.componentInstance.scanned.subscribe((value) => {
       scannedValues.push(value);
     });
@@ -120,15 +110,6 @@ describe('QrScanner', () => {
 
   it('emits the scanned QR content with the jsQR fallback when BarcodeDetector is unavailable', async () => {
     delete (globalThis as { BarcodeDetector?: unknown }).BarcodeDetector;
-    jsQrMock.mockReturnValue({ data: 'maria@auronix.com' });
-    canvasContextSpy.mockReturnValue({
-      drawImage: vi.fn(),
-      getImageData: vi.fn().mockReturnValue({
-        data: new Uint8ClampedArray(16),
-        width: 2,
-        height: 2,
-      }),
-    } as unknown as CanvasRenderingContext2D);
     Object.defineProperty(navigator, 'mediaDevices', {
       configurable: true,
       value: {
@@ -139,13 +120,19 @@ describe('QrScanner', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [QrScannerComponent],
+      imports: [QrScanner],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(QrScannerComponent);
+    fixture = TestBed.createComponent(QrScanner);
     fixture.componentInstance.scanned.subscribe((value) => {
       scannedValues.push(value);
     });
+    const readQrValueWithCanvasSpy = vi
+      .spyOn(
+        fixture.componentInstance as unknown as { readQrValueWithCanvas: (video: HTMLVideoElement) => string | null },
+        'readQrValueWithCanvas',
+      )
+      .mockReturnValue('maria@auronix.com');
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.componentInstance['clearScanTimer']();
@@ -155,19 +142,10 @@ describe('QrScanner', () => {
       configurable: true,
       value: HTMLMediaElement.HAVE_ENOUGH_DATA,
     });
-    Object.defineProperty(videoElement, 'videoWidth', {
-      configurable: true,
-      value: 320,
-    });
-    Object.defineProperty(videoElement, 'videoHeight', {
-      configurable: true,
-      value: 240,
-    });
-
     await fixture.componentInstance['detectFrame']();
     fixture.detectChanges();
 
-    expect(jsQrMock).toHaveBeenCalled();
+    expect(readQrValueWithCanvasSpy).toHaveBeenCalledWith(videoElement);
     expect(scannedValues).toEqual(['maria@auronix.com']);
   });
 });

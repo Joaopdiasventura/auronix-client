@@ -6,6 +6,7 @@ import { configureAxe } from 'vitest-axe';
 import { vi } from 'vitest';
 import { NotificationEventType } from './core/enums/notification/notification-event-type.enum';
 import { NotificationStreamEvent } from './core/models/notification';
+import { User } from './core/models/user';
 import { AuthService } from './core/services/auth/auth.service';
 import { NotificationService } from './core/services/notification/notification.service';
 import { ToastService } from './core/services/toast/toast.service';
@@ -115,7 +116,9 @@ describe('App', () => {
   });
 
   it('should render the root outlet container', async () => {
+    authService.data.set(createUser());
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.app-root')).not.toBeNull();
@@ -271,7 +274,7 @@ function createPendingEvent(description: string | null = 'Pedido principal'): No
   };
 }
 
-function createUser() {
+function createUser(): User {
   return {
     id: 'user-id',
     email: 'joao@auronix.com',
@@ -296,5 +299,7 @@ class MockBrowserNotification {
     MockBrowserNotification.instances.push(this);
   }
 
-  public close(): void {}
+  public close(): void {
+    return;
+  }
 }

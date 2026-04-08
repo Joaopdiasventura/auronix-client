@@ -41,7 +41,7 @@
         <g>
           <circle
             class="activity-chart__point"
-            [class.activity-chart__point--out]="point.direction == 'out'"
+            [class.activity-chart__point--out]="point.direction === 'out'"
             [attr.cx]="point.x"
             [attr.cy]="point.y"
             r="2.1"

@@ -29,11 +29,11 @@ export interface TransferFailedNotificationData {
   failureReason: string;
 }
 
-export type NotificationEventDataMap = {
+export interface NotificationEventDataMap {
   [NotificationEventType.TransferPending]: TransferPendingNotificationData;
   [NotificationEventType.TransferCompleted]: TransferCompletedNotificationData;
   [NotificationEventType.TransferFailed]: TransferFailedNotificationData;
-};
+}
 
 export interface NotificationSseMessage<T extends NotificationEventType = NotificationEventType> {
   type: T;

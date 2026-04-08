@@ -79,7 +79,7 @@ class MockEventSource {
   public closed = false;
   public readonly listeners = new Map<string, EventListener[]>();
   public readonly readyState = 1;
-  public onerror: ((this: EventSource, event: Event) => any) | null = null;
+  public onerror: ((this: EventSource, event: Event) => unknown) | null = null;
 
   public constructor(
     public readonly url: string,

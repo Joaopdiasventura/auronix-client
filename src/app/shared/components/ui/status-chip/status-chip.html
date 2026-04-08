@@ -1,9 +1,9 @@
 <span
   class="status-chip"
-  [class.status-chip--danger]="tone() == 'danger'"
-  [class.status-chip--info]="tone() == 'info'"
-  [class.status-chip--success]="tone() == 'success'"
-  [class.status-chip--warning]="tone() == 'warning'"
+  [class.status-chip--danger]="tone() === 'danger'"
+  [class.status-chip--info]="tone() === 'info'"
+  [class.status-chip--success]="tone() === 'success'"
+  [class.status-chip--warning]="tone() === 'warning'"
 >
   {{ label() }}
 </span>

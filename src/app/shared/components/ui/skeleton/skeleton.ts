@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   template: `
     <span
       class="skeleton"
-      [class.skeleton--circle]="shape() == 'circle'"
+      [class.skeleton--circle]="shape() === 'circle'"
       [style.width]="width()"
       [style.height]="resolvedHeight()"
       [style.border-radius]="resolvedRadius()"

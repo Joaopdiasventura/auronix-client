@@ -23,9 +23,9 @@ interface BarcodeDetectorLike {
   detect(source: ImageBitmapSource): Promise<DetectedBarcodeLike[]>;
 }
 
-interface BarcodeDetectorConstructorLike {
-  new (options?: BarcodeDetectorOptionsLike): BarcodeDetectorLike;
-}
+type BarcodeDetectorConstructorLike = new (
+  options?: BarcodeDetectorOptionsLike,
+) => BarcodeDetectorLike;
 
 @Component({
   selector: 'app-qr-scanner',

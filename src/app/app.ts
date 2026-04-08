@@ -225,7 +225,9 @@ export class App {
         this.openBrowserNotification(toast);
         return;
       }
-    } catch {}
+    } catch {
+      /* Fall back to the in-app toast below. */
+    }
 
     this.toastService.show(toast);
   }
@@ -236,7 +238,7 @@ export class App {
       tag: toast.id,
     });
 
-    notification.onclick = () => {
+    notification.onclick = (): void => {
       if (typeof window != 'undefined') window.focus();
       this.router.navigate(toast.route);
       notification.close();

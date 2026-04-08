@@ -1,4 +1,9 @@
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import {
+  HttpInterceptorFn,
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TransferService } from './transfer.service';
@@ -12,7 +17,9 @@ describe('TransferService', () => {
       providers: [
         provideHttpClient(
           withFetch(),
-          withInterceptors([(req, next) => next(req.clone({ withCredentials: true }))]),
+          withInterceptors([
+            (req, next): ReturnType<HttpInterceptorFn> => next(req.clone({ withCredentials: true })),
+          ]),
         ),
         provideHttpClientTesting(),
         TransferService,

@@ -7,8 +7,8 @@ import { Skeleton } from './skeleton';
   template: `
     <article
       class="skeleton-list-row"
-      [class.skeleton-list-row--history]="variant() == 'history'"
-      [class.skeleton-list-row--ledger]="variant() == 'ledger'"
+      [class.skeleton-list-row--history]="variant() === 'history'"
+      [class.skeleton-list-row--ledger]="variant() === 'ledger'"
       aria-hidden="true"
     >
       <div class="skeleton-list-row__main">
@@ -20,7 +20,7 @@ import { Skeleton } from './skeleton';
         <app-skeleton height="0.875rem" width="14rem" />
       </div>
 
-      @if (variant() == 'history') {
+      @if (variant() === 'history') {
         <div class="skeleton-list-row__nature">
           <app-skeleton height="0.75rem" width="4rem" />
           <app-skeleton height="0.85rem" width="6.75rem" />

@@ -62,7 +62,7 @@ describe('HomePage', () => {
       updatedAt: '2026-03-29T00:00:00.000Z',
     }),
     clear: vi.fn(),
-    isLoggedIn: () => true,
+    isLoggedIn: (): boolean => true,
     update: vi.fn((user) => authService.data.set(user)),
   };
 

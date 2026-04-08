@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
+  GuardResult,
   Router,
   RouterStateSnapshot,
   UrlTree,
@@ -72,7 +73,9 @@ describe('AuthGuard', () => {
   });
 });
 
-async function resolveGuardResult(result: ReturnType<AuthGuard['canActivate']>) {
+async function resolveGuardResult(
+  result: ReturnType<AuthGuard['canActivate']>,
+): Promise<GuardResult> {
   if (isObservable(result)) return firstValueFrom(result);
-  return result;
+  return Promise.resolve(result);
 }

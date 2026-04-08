@@ -12,10 +12,10 @@ export class NotificationService {
   private readonly streamUrl = API_URL + '/notification/stream';
   private readonly eventsSource = new Subject<NotificationStreamEvent>();
   private eventSource: EventSource | null = null;
-  private listeners: Array<{
+  private listeners: {
     eventType: NotificationEventType;
     listener: EventListener;
-  }> = [];
+  }[] = [];
 
   public connect(): Observable<NotificationStreamEvent> {
     return this.eventsSource.asObservable();
@@ -29,7 +29,7 @@ export class NotificationService {
       this.registerListener(eventSource, eventType, this.eventsSource),
     );
 
-    eventSource.onerror = () => {
+    eventSource.onerror = (): void => {
       if (eventSource.readyState != EventSource.CLOSED) return;
       this.teardown();
     };
